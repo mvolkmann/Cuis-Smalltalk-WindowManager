@@ -1,28 +1,30 @@
-'From Cuis7.1 [latest update: #6883] on 13 December 2024 at 11:24:43 am'!
+'From Cuis7.3 [latest update: #6895] on 15 December 2024 at 11:30:55 am'!
 'Description '!
-!provides: 'WindowManager' 1 7!
+!provides: 'WindowManager' 1 9!
 
 
 
-!SystemWindow class methodsFor: '*WindowManager' stamp: 'RMV 12/13/2024 11:24:21'!
+!SystemWindow class methodsFor: '*WindowManager' stamp: 'RMV 12/15/2024 11:30:23'!
 restoreWindows
 	"Restore the location and extent of each window described in a file."
 	| fileEntry fileName height id line parts stream width window windows x y|
 	
 	windows := (SystemWindow windowsIn: self runningWorld satisfying: [ :w | w visible]).
 
-	fileName := 'windows.txt'.
+	fileName := (SystemDictionary new imageName allButLast: 5), 'txt'.
 	fileEntry := fileName asFileEntry.
 	stream := fileEntry readStream.
 
 	line := stream nextLine.
 	[ line = nil ] whileFalse: [
+		line logAs: line.
 		parts := line subStrings: ','.
-		id := parts at: 1 :: asInteger.
-		x := parts at: 3 :: asInteger.
-		y := parts at: 4 :: asInteger.
-		width := parts at: 5 :: asInteger.
-		height := parts at: 6 :: asInteger.
+		parts logAs: parts.
+		id := parts at: 1 :: asNumber.
+		x := parts at: 3 :: asNumber.
+		y := parts at: 4 :: asNumber.
+		width := parts at: 5 :: asNumber.
+		height := parts at: 6 :: asNumber.
 		"'id={1} x={2} y={3} width={4} height={5}' format: {id. x. y. width. height} :: print."
 		
 		window := windows detect: [ :w | w morphId = id ].
@@ -36,12 +38,12 @@ restoreWindows
 
 	'restored window positions and locations described in ', fileName :: print.! !
 
-!SystemWindow class methodsFor: '*WindowManager' stamp: 'RMV 12/13/2024 11:23:33'!
+!SystemWindow class methodsFor: '*WindowManager' stamp: 'RMV 12/15/2024 11:14:43'!
 saveWindows
 	"Write the id, location, and extent of each visible window to a file."
 	| fileEntry fileName windows |
 
-	fileName := 'windows.txt'.
+	fileName := (SystemDictionary new imageName allButLast: 5), 'txt'.
 	fileEntry := fileName asFileEntry.
 	windows := (SystemWindow windowsIn: self runningWorld satisfying: [ :w | w visible]).
 	
