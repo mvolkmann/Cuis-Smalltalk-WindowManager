@@ -1,10 +1,10 @@
-'From Cuis7.3 [latest update: #6895] on 15 December 2024 at 11:30:55 am'!
+'From Cuis7.3 [latest update: #6895] on 17 December 2024 at 6:09:50 am'!
 'Description '!
-!provides: 'WindowManager' 1 9!
+!provides: 'WindowManager' 1 11!
 
 
 
-!SystemWindow class methodsFor: '*WindowManager' stamp: 'RMV 12/15/2024 11:30:23'!
+!SystemWindow class methodsFor: '*WindowManager' stamp: 'RMV 12/17/2024 06:09:28'!
 restoreWindows
 	"Restore the location and extent of each window described in a file."
 	| fileEntry fileName height id line parts stream width window windows x y|
@@ -17,9 +17,7 @@ restoreWindows
 
 	line := stream nextLine.
 	[ line = nil ] whileFalse: [
-		line logAs: line.
 		parts := line subStrings: ','.
-		parts logAs: parts.
 		id := parts at: 1 :: asNumber.
 		x := parts at: 3 :: asNumber.
 		y := parts at: 4 :: asNumber.
@@ -27,7 +25,7 @@ restoreWindows
 		height := parts at: 6 :: asNumber.
 		"'id={1} x={2} y={3} width={4} height={5}' format: {id. x. y. width. height} :: print."
 		
-		window := windows detect: [ :w | w morphId = id ].
+		window := windows detect: [ :w | w morphId = id ] ifNone: [].
 		window ifNotNil: [
 			window morphPosition: x@y.
 			window morphExtent: width@height.
