@@ -1,6 +1,6 @@
-'From Cuis7.3 [latest update: #7044] on 6 February 2025 at 7:28:04 pm'!
+'From Cuis7.3 [latest update: #7044] on 7 February 2025 at 8:59:34 am'!
 'Description '!
-!provides: 'WindowManager' 1 13!
+!provides: 'WindowManager' 1 15!
 SystemOrganization addCategory: #WindowManager!
 
 
@@ -15,7 +15,67 @@ WindowManager class
 	instanceVariableNames: ''!
 
 
-!WindowManager class methodsFor: 'as yet unclassified' stamp: 'RMV 2/6/2025 19:26:38'!
+!WindowManager class methodsFor: 'menu-world' stamp: 'RMV 2/7/2025 08:40:42'!
+worldMenuOptions
+	
+	^`{
+		{
+			#submenuOf -> TheWorldMenu windowsLabel.
+			#itemGroup -> 50.
+			#itemOrder -> 10.
+			#label -> 'Save Window Locations & Sizes'.
+			#object -> WindowManager.
+			#selector -> #saveWindows.
+			#icon -> #saveIcon.
+			#balloonText -> 'Saves the location and size of all open windows.'.
+		} asDictionary.
+		{
+			#submenuOf -> TheWorldMenu windowsLabel.
+			#itemGroup -> 50.
+			#itemOrder -> 20.
+			#label -> 'Restore Window Locations & Sizes'.
+			#object -> WindowManager.
+			#selector -> #restoreWindows.
+			#icon -> #openIcon.
+			#balloonText -> 'Restores the location and size of all open windows.'.
+		} asDictionary.
+		{
+			#submenuOf -> TheWorldMenu windowsLabel.
+			#itemGroup -> 50.
+			#itemOrder -> 30.
+			#label -> 'Open Near Corners'.
+			#object -> WindowManager.
+			#selector -> #openNearCorners.
+			#icon -> #openIcon.
+			#balloonText -> 'Sets preference to open windows near World corners'.
+		} asDictionary.
+		{
+			#submenuOf -> TheWorldMenu windowsLabel.
+			#itemGroup -> 50.
+			#itemOrder -> 40.
+			#label -> 'Open at Cursor'.
+			#object -> WindowManager.
+			#selector -> #openAtCursor.
+			#icon -> #openIcon.
+			#balloonText -> 'Sets preference to open windows at cursor location'.
+		} asDictionary.
+	}`
+
+	! !
+
+!WindowManager class methodsFor: 'preferences' stamp: 'RMV 2/7/2025 08:41:28'!
+openAtCursor
+	
+	Preferences name: #openWindowLocation category: #gui value: 'at cursor'.
+	Preferences saveToDisk: #openWindowLocation.! !
+
+!WindowManager class methodsFor: 'preferences' stamp: 'RMV 2/7/2025 08:41:44'!
+openNearCorners
+	
+	Preferences name: #openWindowLocation category: #gui value: 'near corners'.
+	Preferences saveToDisk: #openWindowLocation.! !
+
+!WindowManager class methodsFor: 'user interface' stamp: 'RMV 2/6/2025 19:26:38'!
 restoreWindows
 	"Restore the location and extent of each window described in a file."
 	| fileEntry fileName height id line parts stream width window windows x y|
@@ -48,7 +108,7 @@ restoreWindows
 	'restored window positions and locations from' print.
 	fileName print.! !
 
-!WindowManager class methodsFor: 'as yet unclassified' stamp: 'RMV 2/6/2025 19:26:24'!
+!WindowManager class methodsFor: 'user interface' stamp: 'RMV 2/6/2025 19:26:24'!
 saveWindows
 	"Write the id, location, and extent of each visible window to a file."
 	| fileEntry fileName windows |
@@ -79,30 +139,76 @@ saveWindows
 	'saved window positions and sizes in' print.
 	fileName print.! !
 
-!WindowManager class methodsFor: 'as yet unclassified' stamp: 'RMV 2/6/2025 19:27:23'!
-worldMenuOptions
+!SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/7/2025 08:55:49'!
+openAtCursor: aWorld
+	| fromMenu position sender windowExtent windowHeight windowRect windowWidth worldExtent worldHeight worldWidth |
 	
-	^`{
-		{
-			#submenuOf -> TheWorldMenu windowsLabel.
-			#itemGroup -> 50.
-			#itemOrder -> 10.
-			#label -> 'Save Window Locations & Sizes'.
-			#object -> WindowManager.
-			#selector -> #saveWindows.
-			#icon -> #saveIcon.
-			#balloonText -> 'Saves the location and size of all open windows.'.
-		} asDictionary.
-		{
-			#submenuOf -> TheWorldMenu windowsLabel.
-			#itemGroup -> 50.
-			#itemOrder -> 20.
-			#label -> 'Restore Window Locations & Sizes'.
-			#object -> WindowManager.
-			#selector -> #restoreWindows.
-			#icon -> #openIcon.
-			#balloonText -> 'Restores the location and size of all open windows.'.
-		} asDictionary
-	}`
+	"Determine whether this method was invoked from a menu selection".
+	fromMenu := false.
+	sender := thisContext sender.
+	[ sender notNil and: [ fromMenu not ] ] whileTrue: [
+		fromMenu := sender receiver class = MenuMorph.
+		sender := sender sender.
+	].
 
-	! !
+	"Determine the goal position for the upper-left corner of the window."
+	position := fromMenu
+		ifTrue: [ Smalltalk at: #worldClickPosition ]
+		ifFalse: [ self runningWorld activeHand location translation ].
+	
+	"Get the size of the window."
+	windowExtent := self morphExtent.
+	"300@200 is the default assigned in the SystemWindow instance method initialize."
+	windowExtent = `300 @ 200` ifTrue: [
+		windowRect := self initialFrameIn: aWorld.
+		windowExtent := windowRect extent.
+	].
+	self morphExtent: windowExtent.
+	windowWidth := windowExtent x.
+	windowHeight := windowExtent y.
+		
+	"Get the size of the World."
+	worldExtent := aWorld morphExtent.
+	worldWidth := worldExtent x.
+	worldHeight := worldExtent y.
+		
+	"It seems most windows automatically choose their size
+	based on the World size, so this code isn't really necessary."
+	"Handle case where window is wider than World."
+	windowWidth > worldWidth ifTrue: [
+		self morphExtent: (Point x: worldWidth y: windowHeight).
+		position := Point x: 0 y: position y.
+	].		
+	"Handle case where window is taller than World."
+	windowHeight > worldHeight ifTrue: [
+		self morphExtent: (Point x: windowWidth y: worldHeight).
+		position := Point x: position x y: 0.
+	].
+
+	"If window extends past right side of world, move it left."
+	position x + windowWidth > worldWidth ifTrue: [
+		position := Point x: (worldWidth - windowWidth) y: position y
+	].
+
+	"If window extends past bottom side of world, move it up."
+	position y + windowHeight > worldHeight ifTrue: [
+		position := Point x: position x y: (worldHeight - windowHeight)
+	].
+
+	aWorld addMorph: self position: position.! !
+
+!SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/7/2025 08:58:09'!
+openInWorld: aWorld
+
+	(Preferences at: #openWindowLocation) = 'at cursor'
+		ifTrue: [ self openAtCursor: aWorld ]
+		ifFalse: [ self openNearCorner: aWorld ]! !
+
+!SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/7/2025 08:55:34'!
+openNearCorner: aWorld
+	"This was copied from openInWorld: in the base image."
+	| frameRect |
+	
+	frameRect := self initialFrameIn: aWorld.
+	self morphExtent: frameRect extent.
+	aWorld addMorph: self position: frameRect topLeft.! !
