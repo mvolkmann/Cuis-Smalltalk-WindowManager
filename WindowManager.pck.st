@@ -1,17 +1,28 @@
-'From Cuis7.3 [latest update: #6895] on 17 December 2024 at 6:09:50 am'!
+'From Cuis7.3 [latest update: #7044] on 6 February 2025 at 7:28:04 pm'!
 'Description '!
-!provides: 'WindowManager' 1 11!
+!provides: 'WindowManager' 1 13!
+SystemOrganization addCategory: #WindowManager!
 
 
+!classDefinition: #WindowManager category: #WindowManager!
+Object subclass: #WindowManager
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'WindowManager'!
+!classDefinition: 'WindowManager class' category: #WindowManager!
+WindowManager class
+	instanceVariableNames: ''!
 
-!SystemWindow class methodsFor: '*WindowManager' stamp: 'RMV 12/17/2024 06:09:28'!
+
+!WindowManager class methodsFor: 'as yet unclassified' stamp: 'RMV 2/6/2025 19:26:38'!
 restoreWindows
 	"Restore the location and extent of each window described in a file."
 	| fileEntry fileName height id line parts stream width window windows x y|
 	
 	windows := (SystemWindow windowsIn: self runningWorld satisfying: [ :w | w visible]).
 
-	fileName := (SystemDictionary new imageName allButLast: 5), 'txt'.
+	fileName := (SystemDictionary new imageName allButLast: 5), 'windows'.
 	fileEntry := fileName asFileEntry.
 	stream := fileEntry readStream.
 
@@ -34,14 +45,15 @@ restoreWindows
 		line := stream nextLine.
 	].
 
-	'restored window positions and locations described in ', fileName :: print.! !
+	'restored window positions and locations from' print.
+	fileName print.! !
 
-!SystemWindow class methodsFor: '*WindowManager' stamp: 'RMV 12/15/2024 11:14:43'!
+!WindowManager class methodsFor: 'as yet unclassified' stamp: 'RMV 2/6/2025 19:26:24'!
 saveWindows
 	"Write the id, location, and extent of each visible window to a file."
 	| fileEntry fileName windows |
 
-	fileName := (SystemDictionary new imageName allButLast: 5), 'txt'.
+	fileName := (SystemDictionary new imageName allButLast: 5), 'windows'.
 	fileEntry := fileName asFileEntry.
 	windows := (SystemWindow windowsIn: self runningWorld satisfying: [ :w | w visible]).
 	
@@ -64,4 +76,33 @@ saveWindows
 		]
 	].
 
-	'wrote window positions and sizes to ', fileName :: print.! !
+	'saved window positions and sizes in' print.
+	fileName print.! !
+
+!WindowManager class methodsFor: 'as yet unclassified' stamp: 'RMV 2/6/2025 19:27:23'!
+worldMenuOptions
+	
+	^`{
+		{
+			#submenuOf -> TheWorldMenu windowsLabel.
+			#itemGroup -> 50.
+			#itemOrder -> 10.
+			#label -> 'Save Window Locations & Sizes'.
+			#object -> WindowManager.
+			#selector -> #saveWindows.
+			#icon -> #saveIcon.
+			#balloonText -> 'Saves the location and size of all open windows.'.
+		} asDictionary.
+		{
+			#submenuOf -> TheWorldMenu windowsLabel.
+			#itemGroup -> 50.
+			#itemOrder -> 20.
+			#label -> 'Restore Window Locations & Sizes'.
+			#object -> WindowManager.
+			#selector -> #restoreWindows.
+			#icon -> #openIcon.
+			#balloonText -> 'Restores the location and size of all open windows.'.
+		} asDictionary
+	}`
+
+	! !
