@@ -1,6 +1,6 @@
-'From Cuis7.3 [latest update: #7044] on 7 February 2025 at 8:59:34 am'!
+'From Cuis7.3 [latest update: #7044] on 7 February 2025 at 11:50:29 am'!
 'Description '!
-!provides: 'WindowManager' 1 15!
+!provides: 'WindowManager' 1 16!
 SystemOrganization addCategory: #WindowManager!
 
 
@@ -15,7 +15,7 @@ WindowManager class
 	instanceVariableNames: ''!
 
 
-!WindowManager class methodsFor: 'menu-world' stamp: 'RMV 2/7/2025 08:40:42'!
+!WindowManager class methodsFor: 'menu-world' stamp: 'RMV 2/7/2025 11:50:10'!
 worldMenuOptions
 	
 	^`{
@@ -23,7 +23,7 @@ worldMenuOptions
 			#submenuOf -> TheWorldMenu windowsLabel.
 			#itemGroup -> 50.
 			#itemOrder -> 10.
-			#label -> 'Save Window Locations & Sizes'.
+			#label -> 'Save window locations & sizes'.
 			#object -> WindowManager.
 			#selector -> #saveWindows.
 			#icon -> #saveIcon.
@@ -33,30 +33,30 @@ worldMenuOptions
 			#submenuOf -> TheWorldMenu windowsLabel.
 			#itemGroup -> 50.
 			#itemOrder -> 20.
-			#label -> 'Restore Window Locations & Sizes'.
+			#label -> 'Restore window locations & sizes'.
 			#object -> WindowManager.
 			#selector -> #restoreWindows.
 			#icon -> #openIcon.
 			#balloonText -> 'Restores the location and size of all open windows.'.
 		} asDictionary.
 		{
-			#submenuOf -> TheWorldMenu windowsLabel.
-			#itemGroup -> 50.
+			#submenuOf -> TheWorldMenu preferencesLabel.
+			#itemGroup -> 10.
 			#itemOrder -> 30.
-			#label -> 'Open Near Corners'.
+			#label -> 'Open windows near world corners'.
 			#object -> WindowManager.
 			#selector -> #openNearCorners.
-			#icon -> #openIcon.
+			#icon -> #windowIcon.
 			#balloonText -> 'Sets preference to open windows near World corners'.
 		} asDictionary.
 		{
-			#submenuOf -> TheWorldMenu windowsLabel.
-			#itemGroup -> 50.
+			#submenuOf -> TheWorldMenu preferencesLabel.
+			#itemGroup -> 10.
 			#itemOrder -> 40.
-			#label -> 'Open at Cursor'.
+			#label -> 'Open windows at cursor location'.
 			#object -> WindowManager.
 			#selector -> #openAtCursor.
-			#icon -> #openIcon.
+			#icon -> #windowIcon.
 			#balloonText -> 'Sets preference to open windows at cursor location'.
 		} asDictionary.
 	}`
