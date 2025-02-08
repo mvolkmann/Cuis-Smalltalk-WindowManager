@@ -1,6 +1,6 @@
-'From Cuis7.3 [latest update: #7044] on 8 February 2025 at 2:22:24 pm'!
+'From Cuis7.3 [latest update: #7044] on 8 February 2025 at 2:41:06 pm'!
 'Description '!
-!provides: 'WindowManager' 1 34!
+!provides: 'WindowManager' 1 35!
 SystemOrganization addCategory: #WindowManager!
 
 
@@ -243,6 +243,22 @@ canColorLayouts: aBoolean
 
 	canColorLayouts := aBoolean! !
 
+!SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/8/2025 14:20:52'!
+initialize
+	"Initialize a system window. Add label, stripes, etc., if desired"
+
+	super initialize.
+	canColorLayouts := false.
+	labelString ifNil: [ labelString := 'Untitled Window'].
+	
+	self initializeLabelArea.
+	extent := `300 @ 200`.
+
+	self initializeAdjusters.
+
+	"by default"
+	self beColumn! !
+
 !SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/7/2025 08:55:49'!
 openAtCursor: aWorld
 	| fromMenu position sender windowExtent windowHeight windowRect windowWidth worldExtent worldHeight worldWidth |
@@ -300,6 +316,15 @@ openAtCursor: aWorld
 	].
 
 	aWorld addMorph: self position: position.! !
+
+!SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/8/2025 14:20:08'!
+openInWorld
+	"Ensure all widgets have proper colors before opening"
+	canColorLayouts ifFalse: [
+		Theme current widgetsColorFromToolColor ifTrue: [
+			self widgetsColor: self windowColor ].
+	].
+	super openInWorld! !
 
 !SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/7/2025 08:58:09'!
 openInWorld: aWorld
