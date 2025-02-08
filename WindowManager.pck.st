@@ -1,6 +1,6 @@
-'From Cuis7.3 [latest update: #7044] on 8 February 2025 at 2:41:06 pm'!
+'From Cuis7.3 [latest update: #7044] on 8 February 2025 at 2:43:15 pm'!
 'Description '!
-!provides: 'WindowManager' 1 35!
+!provides: 'WindowManager' 1 36!
 SystemOrganization addCategory: #WindowManager!
 
 
@@ -34,6 +34,11 @@ Object subclass: #WindowManager
 WindowManager class
 	instanceVariableNames: ''!
 
+
+!IconsWindow commentStamp: 'RMV 2/8/2025 14:43:09' prior: 0!
+This is a window that renders all the icons defined in the Theme class.
+It is useful for selecting icons to use in menu items.
+!
 
 !IconsWindow methodsFor: 'as yet unclassified' stamp: 'RMV 2/8/2025 14:22:04'!
 initialize
@@ -74,8 +79,10 @@ initialize
 
 	atRowEnd ifFalse: [ column addMorph: row ].! !
 
-!IconsWindow class methodsFor: 'as yet unclassified' stamp: 'RMV 2/8/2025 14:12:43'!
+!IconsWindow class methodsFor: 'as yet unclassified' stamp: 'RMV 2/8/2025 14:42:42'!
 open
+	"Opens a window that renders all the icons defined in the Theme class.
+	This is useful for selecting icons to use in menu items."
 		
 	self new openInWorld! !
 
