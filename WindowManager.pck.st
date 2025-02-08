@@ -1,8 +1,28 @@
-'From Cuis7.3 [latest update: #7044] on 7 February 2025 at 11:50:29 am'!
+'From Cuis7.3 [latest update: #7044] on 8 February 2025 at 2:09:45 pm'!
 'Description '!
-!provides: 'WindowManager' 1 16!
+!provides: 'WindowManager' 1 31!
 SystemOrganization addCategory: #WindowManager!
 
+
+!classDefinition: #IconsWindow category: #WindowManager!
+SystemWindow subclass: #IconsWindow
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'WindowManager'!
+!classDefinition: 'IconsWindow class' category: #WindowManager!
+IconsWindow class
+	instanceVariableNames: ''!
+
+!classDefinition: #Icon category: #WindowManager!
+PlacedMorph subclass: #Icon
+	instanceVariableNames: 'iconName'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'WindowManager'!
+!classDefinition: 'Icon class' category: #WindowManager!
+Icon class
+	instanceVariableNames: ''!
 
 !classDefinition: #WindowManager category: #WindowManager!
 Object subclass: #WindowManager
@@ -15,7 +35,91 @@ WindowManager class
 	instanceVariableNames: ''!
 
 
-!WindowManager class methodsFor: 'menu-world' stamp: 'RMV 2/7/2025 11:50:10'!
+!IconsWindow methodsFor: 'as yet unclassified' stamp: 'RMV 2/8/2025 14:09:30'!
+initialize
+	| atRowEnd column iconsPerRow iconSelectors row |
+	
+	super initialize.
+	
+	self setLabel: 'Theme Icons'.
+	
+	column := self layoutMorph.
+	column separation: 10.
+
+	iconSelectors := Theme current class allSelectors
+		select: [ :selector | selector endsWith: #Icon ] :: asSortedCollection.
+
+	iconsPerRow := 10.
+	row := nil.
+	atRowEnd := true.
+	
+	iconSelectors withIndexDo: [ :selector :index |
+		row ifNil: [
+			row := LayoutMorph newRow
+				axisEdgeWeight: 0;
+				separation: 10.
+			row layoutSpec
+				proportionalWidth: 0;
+				offAxisEdgeWeight: 0.
+			column addMorph: row.
+		].
+	
+		row addMorph: (IconsWindow buildCell: selector) "fixedWidth: 250".
+		
+		atRowEnd := (index mod: iconsPerRow) = 0.
+		atRowEnd ifTrue: [ row := nil ].
+	].
+
+	atRowEnd ifFalse: [ column addMorph: row ].! !
+
+!IconsWindow class methodsFor: 'as yet unclassified' stamp: 'RMV 2/8/2025 14:03:47'!
+buildCell: selector
+	| label |
+
+	"Removes the word 'Icon' from the end."
+	label := LabelMorph contents: (selector allButLast: 4) :: color: Color blue.
+	^ LayoutMorph newColumn
+		borderColor: Color lightGray;
+		borderWidth: 1;
+		color: Color pink;
+		padding: 6;
+		addMorph: (Icon name: selector);
+		addMorph: label.! !
+
+!IconsWindow class methodsFor: 'as yet unclassified' stamp: 'RMV 2/7/2025 16:55:39'!
+open
+	| extent window |
+		
+	window := self new.
+	extent := window layoutMorph minimumExtent.
+	extent := Point x: 300 y: extent y.
+	window morphExtent: extent.
+	window openInWorld.! !
+
+!Icon methodsFor: 'private' stamp: 'RMV 2/7/2025 16:24:57'!
+name: aSymbol
+
+	iconName := aSymbol! !
+
+!Icon methodsFor: 'drawing' stamp: 'RMV 2/7/2025 20:35:15'!
+drawOn: aCanvas
+	| icon |
+	
+	[
+		icon := Theme current perform: iconName. "a Form object"
+		icon := icon magnifyBy: 2.0. "TODO: Why does this have no effect?"
+		aCanvas image: icon at: 0 @ 0.
+	] on: Error do: [
+		'No instance method "{1}" was found in the Theme class' format: { iconName } :: print
+	]! !
+
+!Icon class methodsFor: 'as yet unclassified' stamp: 'RMV 2/7/2025 16:24:21'!
+name: aSymbol
+
+	^ self new name: aSymbol
+! !
+
+!WindowManager class methodsFor: 'menu-world' stamp: 'RMV 2/7/2025 20:56:25'!
 worldMenuOptions
 	
 	^`{
@@ -36,7 +140,7 @@ worldMenuOptions
 			#label -> 'Restore window locations & sizes'.
 			#object -> WindowManager.
 			#selector -> #restoreWindows.
-			#icon -> #openIcon.
+			#icon -> #refreshIcon.
 			#balloonText -> 'Restores the location and size of all open windows.'.
 		} asDictionary.
 		{
