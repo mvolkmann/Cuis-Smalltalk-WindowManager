@@ -1,6 +1,6 @@
-'From Cuis7.3 [latest update: #7044] on 8 February 2025 at 2:09:45 pm'!
+'From Cuis7.3 [latest update: #7044] on 8 February 2025 at 2:22:24 pm'!
 'Description '!
-!provides: 'WindowManager' 1 31!
+!provides: 'WindowManager' 1 34!
 SystemOrganization addCategory: #WindowManager!
 
 
@@ -35,16 +35,17 @@ WindowManager class
 	instanceVariableNames: ''!
 
 
-!IconsWindow methodsFor: 'as yet unclassified' stamp: 'RMV 2/8/2025 14:09:30'!
+!IconsWindow methodsFor: 'as yet unclassified' stamp: 'RMV 2/8/2025 14:22:04'!
 initialize
 	| atRowEnd column iconsPerRow iconSelectors row |
 	
 	super initialize.
 	
+	canColorLayouts := true.
 	self setLabel: 'Theme Icons'.
 	
 	column := self layoutMorph.
-	column separation: 10.
+	column color: Color white; separation: 10.
 
 	iconSelectors := Theme current class allSelectors
 		select: [ :selector | selector endsWith: #Icon ] :: asSortedCollection.
@@ -57,6 +58,7 @@ initialize
 		row ifNil: [
 			row := LayoutMorph newRow
 				axisEdgeWeight: 0;
+				color: Color white;
 				separation: 10.
 			row layoutSpec
 				proportionalWidth: 0;
@@ -72,29 +74,22 @@ initialize
 
 	atRowEnd ifFalse: [ column addMorph: row ].! !
 
-!IconsWindow class methodsFor: 'as yet unclassified' stamp: 'RMV 2/8/2025 14:03:47'!
+!IconsWindow class methodsFor: 'as yet unclassified' stamp: 'RMV 2/8/2025 14:12:43'!
+open
+		
+	self new openInWorld! !
+
+!IconsWindow class methodsFor: 'private' stamp: 'RMV 2/8/2025 14:15:05'!
 buildCell: selector
 	| label |
 
 	"Removes the word 'Icon' from the end."
 	label := LabelMorph contents: (selector allButLast: 4) :: color: Color blue.
 	^ LayoutMorph newColumn
-		borderColor: Color lightGray;
-		borderWidth: 1;
-		color: Color pink;
+		color: Color tan muchLighter;
 		padding: 6;
 		addMorph: (Icon name: selector);
 		addMorph: label.! !
-
-!IconsWindow class methodsFor: 'as yet unclassified' stamp: 'RMV 2/7/2025 16:55:39'!
-open
-	| extent window |
-		
-	window := self new.
-	extent := window layoutMorph minimumExtent.
-	extent := Point x: 300 y: extent y.
-	window morphExtent: extent.
-	window openInWorld.! !
 
 !Icon methodsFor: 'private' stamp: 'RMV 2/7/2025 16:24:57'!
 name: aSymbol
@@ -242,6 +237,11 @@ saveWindows
 
 	'saved window positions and sizes in' print.
 	fileName print.! !
+
+!SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/8/2025 14:19:18'!
+canColorLayouts: aBoolean
+
+	canColorLayouts := aBoolean! !
 
 !SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/7/2025 08:55:49'!
 openAtCursor: aWorld
