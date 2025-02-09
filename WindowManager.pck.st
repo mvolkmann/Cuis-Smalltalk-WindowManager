@@ -1,6 +1,6 @@
-'From Cuis7.3 [latest update: #7045] on 9 February 2025 at 11:17:53 am'!
+'From Cuis7.3 [latest update: #7045] on 9 February 2025 at 12:25:17 pm'!
 'Description '!
-!provides: 'WindowManager' 1 41!
+!provides: 'WindowManager' 1 43!
 SystemOrganization addCategory: #WindowManager!
 
 
@@ -305,10 +305,17 @@ openAtCursor: aWorld
 
 	aWorld addMorph: self position: position.! !
 
-!SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/9/2025 11:16:03'!
+!SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/9/2025 12:21:08'!
 openInWorld: aWorld
+	| pref |
 
-	(Preferences at: #openWindowLocation) = #atCursor
+	pref := Preferences
+		at: #openWindowLocation
+		ifAbsentAddDescription: ''
+		category: #gui
+		type: Symbol
+		value: #nearCorners.
+	pref = #atCursor
 		ifTrue: [ self openAtCursor: aWorld ]
 		ifFalse: [ self openNearCorner: aWorld ]! !
 
@@ -320,3 +327,9 @@ openNearCorner: aWorld
 	frameRect := self initialFrameIn: aWorld.
 	self morphExtent: frameRect extent.
 	aWorld addMorph: self position: frameRect topLeft.! !
+
+!WorldMorph methodsFor: '*WindowManager' stamp: 'RMV 2/2/2025 16:51:07'!
+click: aMouseButtonEvent localPosition: localEventPosition
+
+	Smalltalk at: #worldClickPosition put: localEventPosition.
+	^self mouseButton2Activity.! !
