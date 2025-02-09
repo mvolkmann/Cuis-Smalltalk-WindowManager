@@ -51,8 +51,4 @@ In the Windows menu this package adds:
   and restores the position and size of all the windows
   described in the file.
 
-<h2>Before</h2>
-<video controls width="250">
-  <source src="https://mvolkmann.github.io/assets/Cuis-Smalltalk-WindowManager.mov" type="video/mov" />
-</video>
-<h2>After</h2>
+[![Watch the video](https://mvolkmann.github.io/assets/Cuis-Smalltalk-WindowManager.mov)](https://mvolkmann.github.io/assets/Cuis-Smalltalk-WindowManager.mov)
