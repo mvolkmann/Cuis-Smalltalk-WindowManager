@@ -51,4 +51,4 @@ In the Windows menu this package adds:
   and restores the position and size of all the windows
   described in the file.
 
-[Watch the video](https://mvolkmann.github.io/blog/src/assets/Cuis-Smalltalk-WindowManager.mov)
+[Watch the video](https://youtu.be/0brmXhIgDB4)
