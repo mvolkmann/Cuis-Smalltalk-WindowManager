@@ -1,6 +1,6 @@
-'From Cuis7.3 [latest update: #7045] on 9 February 2025 at 6:06:00 am'!
+'From Cuis7.3 [latest update: #7045] on 9 February 2025 at 11:17:53 am'!
 'Description '!
-!provides: 'WindowManager' 1 40!
+!provides: 'WindowManager' 1 41!
 SystemOrganization addCategory: #WindowManager!
 
 
@@ -171,16 +171,16 @@ worldMenuOptions
 
 	! !
 
-!WindowManager class methodsFor: 'preferences' stamp: 'RMV 2/7/2025 08:41:28'!
+!WindowManager class methodsFor: 'preferences' stamp: 'RMV 2/9/2025 11:15:12'!
 openAtCursor
 	
-	Preferences name: #openWindowLocation category: #gui value: 'at cursor'.
+	Preferences name: #openWindowLocation category: #gui value: #atCursor.
 	Preferences saveToDisk: #openWindowLocation.! !
 
-!WindowManager class methodsFor: 'preferences' stamp: 'RMV 2/7/2025 08:41:44'!
+!WindowManager class methodsFor: 'preferences' stamp: 'RMV 2/9/2025 11:15:22'!
 openNearCorners
 	
-	Preferences name: #openWindowLocation category: #gui value: 'near corners'.
+	Preferences name: #openWindowLocation category: #gui value: #nearCorners.
 	Preferences saveToDisk: #openWindowLocation.! !
 
 !WindowManager class methodsFor: 'user interface' stamp: 'RMV 2/6/2025 19:26:38'!
@@ -305,10 +305,10 @@ openAtCursor: aWorld
 
 	aWorld addMorph: self position: position.! !
 
-!SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/7/2025 08:58:09'!
+!SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/9/2025 11:16:03'!
 openInWorld: aWorld
 
-	(Preferences at: #openWindowLocation) = 'at cursor'
+	(Preferences at: #openWindowLocation) = #atCursor
 		ifTrue: [ self openAtCursor: aWorld ]
 		ifFalse: [ self openNearCorner: aWorld ]! !
 
