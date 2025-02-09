@@ -23,7 +23,7 @@ In the Preferences menu this package adds:
   extend past the right or bottom edge of the World,
   the window is moved left and/or up so it does not do that.
 
-The second issue is related to window sizes and locations.
+The second issue is related to window locations and sizes.
 When opening a previously saved Cuis image on a laptop,
 it opens on the laptop screen.
 Suppose you move the Cuis window to an external monitor,
