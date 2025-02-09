@@ -6,7 +6,7 @@ These address two issues.
 The first issue is that by default new windows are opened
 near the corners of the Cuis window.
 This means that windows can be opened far from the
-position that was clicked to open the World menu.
+location that was clicked to open the World menu.
 This is especially true when working on a large monitor.
 
 In the Preferences menu this package adds:
@@ -32,7 +32,7 @@ carefully position and resize each window within the Cuis window
 to utilize the space.
 If you save the image, quit, and restart it,
 the Cuis window will once again open on the laptop screen.
-The positions of all the windows inside the Cuis window
+The locations of all the windows inside the Cuis window
 will be modified to fit on the smaller screen.
 If you then move the Cuis window back to the external monitor,
 all the work you did to reposition and resize the windows will have been lost.
@@ -41,14 +41,14 @@ In the Windows menu this package adds:
 
 - "Save window locations & sizes"
 
-  This writes the id, name, position, and size of
+  This writes the id, name, location, and size of
   all the currently open windows to a text file whose
   name is the image name and whose file extension is ".windows".
 
 - "Restore window locations & sizes"
 
   This reads the ".windows" file for the current image
-  and restores the position and size of all the windows
+  and restores the location and size of all the windows
   described in the file.
 
 [Watch the video](https://youtu.be/0brmXhIgDB4)
