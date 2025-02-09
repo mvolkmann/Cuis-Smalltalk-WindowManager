@@ -1,6 +1,6 @@
-'From Cuis7.3 [latest update: #7044] on 8 February 2025 at 2:43:15 pm'!
+'From Cuis7.3 [latest update: #7045] on 9 February 2025 at 6:06:00 am'!
 'Description '!
-!provides: 'WindowManager' 1 36!
+!provides: 'WindowManager' 1 40!
 SystemOrganization addCategory: #WindowManager!
 
 
@@ -40,17 +40,18 @@ This is a window that renders all the icons defined in the Theme class.
 It is useful for selecting icons to use in menu items.
 !
 
-!IconsWindow methodsFor: 'as yet unclassified' stamp: 'RMV 2/8/2025 14:22:04'!
+!IconsWindow methodsFor: 'as yet unclassified' stamp: 'RMV 2/9/2025 06:05:46'!
 initialize
 	| atRowEnd column iconsPerRow iconSelectors row |
 	
 	super initialize.
 	
-	canColorLayouts := true.
 	self setLabel: 'Theme Icons'.
 	
 	column := self layoutMorph.
-	column color: Color white; separation: 10.
+	column doAdoptWidgetsColor;
+		color: Color white;
+		separation: 10.
 
 	iconSelectors := Theme current class allSelectors
 		select: [ :selector | selector endsWith: #Icon ] :: asSortedCollection.
@@ -62,8 +63,7 @@ initialize
 	iconSelectors withIndexDo: [ :selector :index |
 		row ifNil: [
 			row := LayoutMorph newRow
-				axisEdgeWeight: 0;
-				color: Color white;
+				axisEdgeWeight: 0; "left-align"
 				separation: 10.
 			row layoutSpec
 				proportionalWidth: 0;
@@ -71,7 +71,7 @@ initialize
 			column addMorph: row.
 		].
 	
-		row addMorph: (IconsWindow buildCell: selector) "fixedWidth: 250".
+		row addMorph: (IconsWindow buildCell: selector).
 		
 		atRowEnd := (index mod: iconsPerRow) = 0.
 		atRowEnd ifTrue: [ row := nil ].
@@ -86,14 +86,16 @@ open
 		
 	self new openInWorld! !
 
-!IconsWindow class methodsFor: 'private' stamp: 'RMV 2/8/2025 14:15:05'!
+!IconsWindow class methodsFor: 'private' stamp: 'RMV 2/9/2025 06:05:06'!
 buildCell: selector
 	| label |
 
 	"Removes the word 'Icon' from the end."
 	label := LabelMorph contents: (selector allButLast: 4) :: color: Color blue.
+	
 	^ LayoutMorph newColumn
-		color: Color tan muchLighter;
+		doAdoptWidgetsColor;
+		color: Color tan lighter;
 		padding: 6;
 		addMorph: (Icon name: selector);
 		addMorph: label.! !
@@ -245,27 +247,6 @@ saveWindows
 	'saved window positions and sizes in' print.
 	fileName print.! !
 
-!SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/8/2025 14:19:18'!
-canColorLayouts: aBoolean
-
-	canColorLayouts := aBoolean! !
-
-!SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/8/2025 14:20:52'!
-initialize
-	"Initialize a system window. Add label, stripes, etc., if desired"
-
-	super initialize.
-	canColorLayouts := false.
-	labelString ifNil: [ labelString := 'Untitled Window'].
-	
-	self initializeLabelArea.
-	extent := `300 @ 200`.
-
-	self initializeAdjusters.
-
-	"by default"
-	self beColumn! !
-
 !SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/7/2025 08:55:49'!
 openAtCursor: aWorld
 	| fromMenu position sender windowExtent windowHeight windowRect windowWidth worldExtent worldHeight worldWidth |
@@ -323,15 +304,6 @@ openAtCursor: aWorld
 	].
 
 	aWorld addMorph: self position: position.! !
-
-!SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/8/2025 14:20:08'!
-openInWorld
-	"Ensure all widgets have proper colors before opening"
-	canColorLayouts ifFalse: [
-		Theme current widgetsColorFromToolColor ifTrue: [
-			self widgetsColor: self windowColor ].
-	].
-	super openInWorld! !
 
 !SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/7/2025 08:58:09'!
 openInWorld: aWorld
