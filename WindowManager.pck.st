@@ -1,6 +1,6 @@
-'From Cuis7.3 [latest update: #7045] on 9 February 2025 at 12:25:17 pm'!
+'From Cuis7.3 [latest update: #7044] on 4 March 2025 at 1:35:19 pm'!
 'Description '!
-!provides: 'WindowManager' 1 43!
+!provides: 'WindowManager' 1 44!
 SystemOrganization addCategory: #WindowManager!
 
 
@@ -246,6 +246,15 @@ saveWindows
 
 	'saved window positions and sizes in' print.
 	fileName print.! !
+
+!WindowManager class methodsFor: 'as yet unclassified' stamp: 'RMV 3/4/2025 13:34:55'!
+tileImage: aFilePath
+	| stream |
+
+	Preferences at: #backgroundEffect put: #tile.
+	stream := aFilePath asFileEntry readStream.
+	self runningWorld backgroundImageData: stream binary contentsOfEntireFile.
+! !
 
 !SystemWindow methodsFor: '*WindowManager' stamp: 'RMV 2/7/2025 08:55:49'!
 openAtCursor: aWorld
